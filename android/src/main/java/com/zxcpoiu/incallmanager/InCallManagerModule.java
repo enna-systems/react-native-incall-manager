@@ -1021,13 +1021,23 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
             data.put("sourceUri", busytoneUri);
             data.put("setLooping", false);
+
+            //data.put("audioStream", AudioManager.STREAM_VOICE_CALL); // --- lagacy
+            // --- Should use VOICE_COMMUNICATION for sound during a call or it may be silenced.
+            data.put("audioUsage", AudioAttributes.USAGE_MEDIA);
+            data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC); // --- CONTENT_TYPE_MUSIC?
+
+            setMediaPlayerEvents((MediaPlayer)mBusytone, "mBusytone");
+            mBusytone.startPlay(data);
+
             return true;
         } catch(Exception e) {
             Log.d(TAG, "startBusytone() failed", e);
             return false;
         }   
     }
-
+    
+    public void stopBusytone() {
         try {
             if (mBusytone != null) {
                 mBusytone.stopPlay();
