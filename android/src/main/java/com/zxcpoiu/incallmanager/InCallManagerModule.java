@@ -626,7 +626,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         startNoisyAudioEvent();
         startMediaButtonEvent();
         startProximitySensor(); // --- proximity event always enable, but only turn screen off when audio is routing to earpiece.
-        setKeepScreenOn(true);
+        // setKeepScreenOn(true);
     }
 
     private void stopEvents() {
@@ -634,8 +634,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         stopNoisyAudioEvent();
         stopMediaButtonEvent();
         stopProximitySensor();
-        setKeepScreenOn(false);
-        turnScreenOn();
+        // setKeepScreenOn(false);
+        // turnScreenOn();
     }
 
     @ReactMethod
@@ -951,10 +951,12 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             data.put("sourceUri", ringbackUri);
             data.put("setLooping", true);
 
-            //data.put("audioStream", AudioManager.STREAM_VOICE_CALL); // --- lagacy
+            // TODO: Check if these changes are working correctly - we've set AudioManager.STREAM_MUSIC before so that ringtone volume can be set with music setting
+
+            //data.put("audioStream", AudioManager.STREAM_MUSIC); // --- lagacy
             // --- The ringback doesn't have to be a DTMF.
             // --- Should use VOICE_COMMUNICATION for sound during call or it may be silenced.
-            data.put("audioUsage", AudioAttributes.USAGE_VOICE_COMMUNICATION);
+            data.put("audioUsage", AudioAttributes.USAGE_MEDIA);
             data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC);
 
             setMediaPlayerEvents((MediaPlayer)mRingback, "mRingback");
@@ -1019,20 +1021,22 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
             data.put("sourceUri", busytoneUri);
             data.put("setLooping", false);
+
             //data.put("audioStream", AudioManager.STREAM_VOICE_CALL); // --- lagacy
             // --- Should use VOICE_COMMUNICATION for sound during a call or it may be silenced.
-            data.put("audioUsage", AudioAttributes.USAGE_VOICE_COMMUNICATION);
-            data.put("audioContentType", AudioAttributes.CONTENT_TYPE_SONIFICATION); // --- CONTENT_TYPE_MUSIC?
+            data.put("audioUsage", AudioAttributes.USAGE_MEDIA);
+            data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC); // --- CONTENT_TYPE_MUSIC?
 
             setMediaPlayerEvents((MediaPlayer)mBusytone, "mBusytone");
             mBusytone.startPlay(data);
+
             return true;
         } catch(Exception e) {
             Log.d(TAG, "startBusytone() failed", e);
             return false;
         }   
     }
-
+    
     public void stopBusytone() {
         try {
             if (mBusytone != null) {
@@ -1064,10 +1068,13 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
                     //if (!audioManager.isStreamMute(AudioManager.STREAM_RING)) {
                     //if (origRingerMode == AudioManager.RINGER_MODE_NORMAL) {
-                    if (audioManager.getStreamVolume(AudioManager.STREAM_RING) == 0) {
-                        Log.d(TAG, "startRingtone(): ringer is silent. leave without play.");
-                        return;
-                    }
+
+                    // enna Dock App should play Ringtone regardless of mute state
+                    
+                    // if (audioManager.getStreamVolume(AudioManager.STREAM_RING) == 0) {
+                    //     Log.d(TAG, "startRingtone(): ringer is silent. leave without play.");
+                    //     return;
+                    // }
 
                     // --- there is no _DTMF_ option in startRingtone()
                     Uri ringtoneUri = getRingtoneUri(ringtoneUriType);
@@ -1091,7 +1098,10 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                     data.put("setLooping", true);
 
                     //data.put("audioStream", AudioManager.STREAM_RING); // --- lagacy
-                    data.put("audioUsage", AudioAttributes.USAGE_NOTIFICATION_RINGTONE); // --- USAGE_NOTIFICATION_COMMUNICATION_REQUEST?
+
+                    // FIXME: Before AudioManager was set to STREAM_RING, now AudioAttributes.USAGE_MEDIA instead of AudioAttributes.USAGE_NOTIFICATION_RINGTONE ?
+
+                    data.put("audioUsage", AudioAttributes.USAGE_MEDIA); // --- USAGE_NOTIFICATION_COMMUNICATION_REQUEST?
                     data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC);
 
                     setMediaPlayerEvents((MediaPlayer) mRingtone, "mRingtone");

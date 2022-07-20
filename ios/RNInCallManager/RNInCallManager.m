@@ -159,7 +159,7 @@ RCT_EXPORT_METHOD(start:(NSString *)mediaType
     if ([_media isEqualToString:@"audio"]) {
         [self startProximitySensor];
     }
-    [self setKeepScreenOn:YES];
+    // [self setKeepScreenOn:YES];
     _audioSessionInitialized = YES;
     //self.debugAudioSession()
 }
@@ -184,7 +184,7 @@ RCT_EXPORT_METHOD(stop:(NSString *)busytoneUriType)
         [self audioSessionSetActive:NO
                             options:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation
                          callerMemo:NSStringFromSelector(_cmd)];
-        [self setKeepScreenOn:NO];
+        // [self setKeepScreenOn:NO];
         [self stopAudioSessionNotification];
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         _forceSpeakerOn = 0;
