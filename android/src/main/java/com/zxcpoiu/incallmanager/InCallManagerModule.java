@@ -960,8 +960,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             data.put("sourceUri", ringbackUri);
             data.put("setLooping", true);
 
-            //data.put("audioStream", AudioManager.STREAM_MUSIC); // --- lagacy
-
+            //data.put("audioStream", AudioManager.STREAM_VOICE_CALL); // --- lagacy
             // --- The ringback doesn't have to be a DTMF.
             // --- Should use VOICE_COMMUNICATION for sound during call or it may be silenced.
             data.put("audioUsage", AudioAttributes.USAGE_VOICE_COMMUNICATION);
