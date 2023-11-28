@@ -960,12 +960,11 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             data.put("sourceUri", ringbackUri);
             data.put("setLooping", true);
 
-            // TODO: Check if these changes are working correctly - we've set AudioManager.STREAM_MUSIC before so that ringtone volume can be set with music setting
-
             //data.put("audioStream", AudioManager.STREAM_MUSIC); // --- lagacy
+
             // --- The ringback doesn't have to be a DTMF.
             // --- Should use VOICE_COMMUNICATION for sound during call or it may be silenced.
-            data.put("audioUsage", AudioAttributes.USAGE_MEDIA);
+            data.put("audioUsage", AudioAttributes.USAGE_VOICE_COMMUNICATION);
             data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC);
 
             setMediaPlayerEvents((MediaPlayer)mRingback, "mRingback");
@@ -1030,22 +1029,20 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
             data.put("sourceUri", busytoneUri);
             data.put("setLooping", false);
-
             //data.put("audioStream", AudioManager.STREAM_VOICE_CALL); // --- lagacy
             // --- Should use VOICE_COMMUNICATION for sound during a call or it may be silenced.
-            data.put("audioUsage", AudioAttributes.USAGE_MEDIA);
-            data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC); // --- CONTENT_TYPE_MUSIC?
+            data.put("audioUsage", AudioAttributes.USAGE_VOICE_COMMUNICATION);
+            data.put("audioContentType", AudioAttributes.CONTENT_TYPE_SONIFICATION); // --- CONTENT_TYPE_MUSIC?
 
             setMediaPlayerEvents((MediaPlayer)mBusytone, "mBusytone");
             mBusytone.startPlay(data);
-
             return true;
         } catch(Exception e) {
             Log.d(TAG, "startBusytone() failed", e);
             return false;
         }   
     }
-    
+
     public void stopBusytone() {
         try {
             if (mBusytone != null) {
@@ -1107,10 +1104,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                     data.put("setLooping", true);
 
                     //data.put("audioStream", AudioManager.STREAM_RING); // --- lagacy
-
-                    // FIXME: Before AudioManager was set to STREAM_RING, now AudioAttributes.USAGE_MEDIA instead of AudioAttributes.USAGE_NOTIFICATION_RINGTONE ?
-
-                    data.put("audioUsage", AudioAttributes.USAGE_MEDIA); // --- USAGE_NOTIFICATION_COMMUNICATION_REQUEST?
+                    data.put("audioUsage", AudioAttributes.USAGE_ALARM); // --- USAGE_NOTIFICATION_COMMUNICATION_REQUEST?
                     data.put("audioContentType", AudioAttributes.CONTENT_TYPE_MUSIC);
 
                     setMediaPlayerEvents((MediaPlayer) mRingtone, "mRingtone");
