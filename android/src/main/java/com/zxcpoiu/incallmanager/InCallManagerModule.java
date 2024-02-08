@@ -391,7 +391,11 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             };
             ReactContext reactContext = getReactApplicationContext();
             if (reactContext != null) {
-                reactContext.registerReceiver(mediaButtonReceiver, filter);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    reactContext.registerReceiver(mediaButtonReceiver, filter, Context.RECEIVER_EXPORTED);
+                } else {
+                    reactContext.registerReceiver(mediaButtonReceiver, filter);
+                }
             } else {
                 Log.d(TAG, "startMediaButtonEvent() reactContext is null");
             }
