@@ -1067,6 +1067,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                     //     return;
                     // }
 
+                    audioUriMap.clear();
+
                     // --- there is no _DTMF_ option in startRingtone()
                     Uri ringtoneUri = getRingtoneUri(ringtoneUriType);
                     if (ringtoneUri == null) {

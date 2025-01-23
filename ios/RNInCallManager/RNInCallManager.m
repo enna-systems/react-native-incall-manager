@@ -354,6 +354,15 @@ RCT_EXPORT_METHOD(startRingtone:(NSString *)ringtoneUriType
                 [self stopRingtone];
             }
         }
+        
+        // Clear cached URIs
+        _bundleRingtoneUri = nil;
+        _bundleRingbackUri = nil;
+        _bundleBusytoneUri = nil;
+        _defaultRingtoneUri = nil;
+        _defaultRingbackUri = nil;
+        _defaultBusytoneUri = nil;
+
         NSURL *ringtoneUri = [self getRingtoneUri:ringtoneUriType];
         if (ringtoneUri == nil) {
             NSLog(@"RNInCallManager.startRingtone(): no available media");
