@@ -1100,7 +1100,20 @@ RCT_EXPORT_METHOD(stopProximitySensor)
 
 - (NSURL *)getRingtoneUri:(NSString *)_type
 {
-    NSString *fileBundle = @"incallmanager_ringtone";
+    NSString *fileBundle;
+    
+    if ([_type isEqualToString:@"_BUNDLE_"]) {
+        fileBundle = @"incallmanager_ringtone";
+    } else if ([_type isEqualToString:@"ringtone2"]) {
+        fileBundle = @"incallmanager_ringtone2";
+    } else if ([_type isEqualToString:@"ringtone3"]) {
+        fileBundle = @"incallmanager_ringtone3";
+    } else if ([_type isEqualToString:@"ringtone4"]) {
+        fileBundle = @"incallmanager_ringtone4";
+    } else {
+        fileBundle = @"incallmanager_ringtone";
+    }
+    
     NSString *fileBundleExt = @"mp3";
     NSString *fileSysWithExt = @"Opening.m4r"; //Marimba.m4r
     NSString *fileSysPath = @"/Library/Ringtones";
@@ -1135,7 +1148,7 @@ RCT_EXPORT_METHOD(stopProximitySensor)
             uriDefault:(NSURL **)uriDefault
 {
     NSString *type = _type;
-    if ([type isEqualToString:@"_BUNDLE_"]) {
+    if ([type isEqualToString:@"_BUNDLE_"] || [_type hasPrefix:@"ringtone"]) {
         if (*uriBundle == nil) {
             *uriBundle = [[NSBundle mainBundle] URLForResource:fileBundle withExtension:fileBundleExt];
             if (*uriBundle == nil) {
