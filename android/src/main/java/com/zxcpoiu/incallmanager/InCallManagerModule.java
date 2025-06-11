@@ -1067,6 +1067,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                     //     return;
                     // }
 
+                    audioUriMap.clear();
+
                     // --- there is no _DTMF_ option in startRingtone()
                     Uri ringtoneUri = getRingtoneUri(ringtoneUriType);
                     if (ringtoneUri == null) {
@@ -1223,7 +1225,26 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
     }
 
     private Uri getRingtoneUri(final String _type) {
-        final String fileBundle = "incallmanager_ringtone";
+
+
+    String fileBundle;
+    switch (_type) {
+        case "_BUNDLE_":
+            fileBundle = "incallmanager_ringtone";
+            break;
+        case "ringtone2":
+            fileBundle = "incallmanager_ringtone2";
+            break;
+        case "ringtone3":
+            fileBundle = "incallmanager_ringtone3";
+            break;
+        case "ringtone4":
+            fileBundle = "incallmanager_ringtone4";
+            break;
+        default:
+            fileBundle = "incallmanager_ringtone";
+        }
+
         final String fileBundleExt = "mp3";
         final String fileSysWithExt = "media_volume.ogg";
         final String fileSysPath = "/system/media/audio/ui"; // --- every devices all ships with different in ringtone. maybe ui sounds are more "stock"
@@ -1272,7 +1293,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
     private Uri getAudioUri(final String _type, final String fileBundle, final String fileBundleExt, final String fileSysWithExt, final String fileSysPath, final String uriBundle, final String uriDefault) {
         String type = _type;
-        if (type.equals("_BUNDLE_")) {
+        if (type.equals("_BUNDLE_") || _type.startsWith("ringtone")) {
             if (audioUriMap.get(uriBundle) == null) {
                 int res = 0;
                 ReactContext reactContext = getReactApplicationContext();
