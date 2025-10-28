@@ -936,6 +936,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
                 return;
             }
 
+            audioUriMap.clear();
+
             ringbackUri = getRingbackUri(ringbackUriType);
             if (ringbackUri == null) {
                 Log.d(TAG, "startRingback(): no available media");
@@ -1305,7 +1307,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
     private Uri getAudioUri(final String _type, final String fileBundle, final String fileBundleExt, final String fileSysWithExt, final String fileSysPath, final String uriBundle, final String uriDefault) {
         String type = _type;
-        if (type.equals("_BUNDLE_") || _type.startsWith("ringtone")) {
+        if (type.equals("_BUNDLE_") || _type.startsWith("ringtone") || _type.equals("emergency")) {
             if (audioUriMap.get(uriBundle) == null) {
                 int res = 0;
                 ReactContext reactContext = getReactApplicationContext();

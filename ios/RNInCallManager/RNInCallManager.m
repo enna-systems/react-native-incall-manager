@@ -302,6 +302,15 @@ RCT_EXPORT_METHOD(startRingback:(NSString *)_ringbackUriType)
                 [self stopRingback];
             }
         }
+
+          // Clear cached URIs
+        _bundleRingtoneUri = nil;
+        _bundleRingbackUri = nil;
+        _bundleBusytoneUri = nil;
+        _defaultRingtoneUri = nil;
+        _defaultRingbackUri = nil;
+        _defaultBusytoneUri = nil;
+        
         // ios don't have embedded DTMF tone generator. use system dtmf sound files.
         NSString *ringbackUriType = [_ringbackUriType isEqualToString:@"_DTMF_"]
             ? @"_DEFAULT_"
@@ -1167,7 +1176,7 @@ RCT_EXPORT_METHOD(stopProximitySensor)
             uriDefault:(NSURL **)uriDefault
 {
     NSString *type = _type;
-    if ([type isEqualToString:@"_BUNDLE_"] || [_type hasPrefix:@"ringtone"]) {
+    if ([type isEqualToString:@"_BUNDLE_"] || [_type hasPrefix:@"ringtone"] || [_type isEqualToString:@"emergency"]) {
         if (*uriBundle == nil) {
             *uriBundle = [[NSBundle mainBundle] URLForResource:fileBundle withExtension:fileBundleExt];
             if (*uriBundle == nil) {
