@@ -1260,7 +1260,17 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
     }
 
     private Uri getRingbackUri(final String _type) {
-        final String fileBundle = "incallmanager_ringback";
+        String fileBundle;
+        switch (_type) {
+            case "_BUNDLE_":
+                fileBundle = "incallmanager_ringback";
+                break;
+            case "emergency":
+                fileBundle = "emergency";
+                break;
+            default:
+                fileBundle = "incallmanager_ringback";
+        }
         final String fileBundleExt = "mp3";
         final String fileSysWithExt = "media_volume.ogg";
         final String fileSysPath = "/system/media/audio/ui"; // --- every devices all ships with different in ringtone. maybe ui sounds are more "stock"
@@ -1269,6 +1279,8 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
         if (_type.equals("_DEFAULT_") ||  _type.isEmpty()) {
             //type = fileSysWithExt;
             return getDefaultUserUri("defaultRingbackUri");
+        } else if (_type.equals("emergency")) {
+            type = "_BUNDLE_";
         } else {
             type = _type;
         }
