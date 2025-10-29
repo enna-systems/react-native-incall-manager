@@ -302,6 +302,15 @@ RCT_EXPORT_METHOD(startRingback:(NSString *)_ringbackUriType)
                 [self stopRingback];
             }
         }
+
+          // Clear cached URIs
+        _bundleRingtoneUri = nil;
+        _bundleRingbackUri = nil;
+        _bundleBusytoneUri = nil;
+        _defaultRingtoneUri = nil;
+        _defaultRingbackUri = nil;
+        _defaultBusytoneUri = nil;
+        
         // ios don't have embedded DTMF tone generator. use system dtmf sound files.
         NSString *ringbackUriType = [_ringbackUriType isEqualToString:@"_DTMF_"]
             ? @"_DEFAULT_"
@@ -1050,7 +1059,14 @@ RCT_EXPORT_METHOD(stopProximitySensor)
 
 - (NSURL *)getRingbackUri:(NSString *)_type
 {
-    NSString *fileBundle = @"incallmanager_ringback";
+    NSString *fileBundle;
+    if ([_type isEqualToString:@"_BUNDLE_"]) {
+        fileBundle = @"incallmanager_ringback";
+    } else if ([_type isEqualToString:@"emergency"]) {
+        fileBundle = @"emergency";
+    } else {
+        fileBundle = @"incallmanager_ringback";
+    }
     NSString *fileBundleExt = @"mp3";
     //NSString *fileSysWithExt = @"vc~ringing.caf"; // --- ringtone of facetime, but can't play it.
     //NSString *fileSysPath = @"/System/Library/Audio/UISounds";
@@ -1061,6 +1077,9 @@ RCT_EXPORT_METHOD(stopProximitySensor)
     NSString *type = [_type isEqualToString:@""] || [_type isEqualToString:@"_DEFAULT_"]
         ? fileSysWithExt
         : _type;
+    if ([_type isEqualToString:@"emergency"]) {
+        type = @"_BUNDLE_";
+    }
 
     NSURL *bundleUri = _bundleRingbackUri;
     NSURL *defaultUri = _defaultRingbackUri;
@@ -1157,7 +1176,7 @@ RCT_EXPORT_METHOD(stopProximitySensor)
             uriDefault:(NSURL **)uriDefault
 {
     NSString *type = _type;
-    if ([type isEqualToString:@"_BUNDLE_"] || [_type hasPrefix:@"ringtone"]) {
+    if ([type isEqualToString:@"_BUNDLE_"] || [_type hasPrefix:@"ringtone"] || [_type isEqualToString:@"emergency"]) {
         if (*uriBundle == nil) {
             *uriBundle = [[NSBundle mainBundle] URLForResource:fileBundle withExtension:fileBundleExt];
             if (*uriBundle == nil) {
