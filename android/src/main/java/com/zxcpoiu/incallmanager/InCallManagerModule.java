@@ -1891,7 +1891,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
     private WritableMap getAudioDeviceStatusMap() {
         WritableMap data = Arguments.createMap();
         String audioDevicesJson = "[";
-        for (AudioDevice s: audioDevices) {
+        for (AudioDevice s: new ArrayList<>(audioDevices)) {
             audioDevicesJson += "\"" + s.name() + "\",";
         }
 
