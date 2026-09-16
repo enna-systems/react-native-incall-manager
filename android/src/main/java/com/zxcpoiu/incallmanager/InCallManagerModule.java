@@ -62,7 +62,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.zxcpoiu.incallmanager.AppRTC.AppRTCBluetoothManager;
 
@@ -164,12 +163,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
 
     // Contains a list of available audio devices. A Set collection is used to
     // avoid duplicate elements.
-    // Read on the native-modules thread (chooseAudioRoute, getAudioDeviceStatusMap) and
-    // rewritten on the UI thread (start() clears it, updateAudioDeviceState replaces it), so
-    // iteration must never see a concurrent modification: a copy-on-write set iterates over a
-    // snapshot. Before this, ConcurrentModificationException in getAudioDeviceStatusMap crashed
-    // the app mid-call (enna dock, Bugsnag: ~160 devices in 30 days).
-    private volatile Set<AudioDevice> audioDevices = new CopyOnWriteArraySet<>();
+    private Set<AudioDevice> audioDevices = new HashSet<>();
 
     interface MyPlayerInterface {
         public boolean isPlaying();
@@ -1839,7 +1833,7 @@ public class InCallManagerModule extends ReactContextBaseJavaModule implements L
             // Store state which is set to true if the device list has changed.
             boolean audioDeviceSetUpdated = !audioDevices.equals(newAudioDevices);
             // Update the existing audio device set.
-            audioDevices = new CopyOnWriteArraySet<>(newAudioDevices);
+            audioDevices = newAudioDevices;
 
             AudioDevice newAudioDevice = getPreferredAudioDevice();
 
